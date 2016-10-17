@@ -1,0 +1,102 @@
+/* FONTS */
+@font-face {
+	font-family: "Aniron";
+  src: url("../fonts/anirm___.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: "Aniron";
+  font-weight: bold;
+  src: url("../fonts/anirb___.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: "Ringbearer";
+  src: url("../fonts/ringm___.ttf") format("truetype");
+}
+
+.aniron {
+	font-family: "Aniron";
+}
+
+.ringbearer {
+	font-family: "Ringbearer";
+	text-align: center;
+}
+
+.fredoka {
+  font-family: 'Fredoka One', cursive;
+}
+
+.alegraya, button {
+  font-family: 'Alegreya Sans SC', sans-serif;
+}
+
+.goudy {
+  font-family: 'Goudy Bookletter 1911', serif;
+}
+
+body {
+  background-image: url("../images/background.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: 1280px 800px;
+}
+
+img {
+  display: block;
+  margin: 0 auto;
+  height: 100%;
+  width: 100%;
+}
+
+#attack-button {
+  width: 100%;
+}
+
+#navbar-main {
+  float:right;
+}
+
+.character {
+  margin: 0 -5%;
+  filter: drop-shadow(5px 5px 5px #5BC0DE);
+}
+
+.staging-pic, .enemy-pic {
+  height: 100%;
+}
+
+.staging-pic{
+  filter: contrast(.5);
+}
+
+.enemy {
+  filter: drop-shadow(5px 5px 5px #EE5F5B);
+}
+.enemy-pic {
+  filter: grayscale(1) contrast(.5);
+}
+
+.fighter {
+  filter: drop-shadow(5px 5px 5px #62C462)
+}
+
+.fighter-pic {
+  filter: saturate(1.5);
+}
+
+.defender {
+  filter: drop-shadow(5px 5px 5px #000000)
+}
+
+.defender-pic {
+  filter: hue-rotate(150deg);
+}
+
+
+
+h4 {
+  text-align: center;
+}
