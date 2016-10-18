@@ -37,51 +37,63 @@ $(document).ready(function() {
 //
 // 	}
 
-});
+
+function Character(name, health, attack, counter) {
+	this.name = name;
+	this.htmlElement = $("#" + name);
+  this.healthPoints = health;
+  this.attackPower = attack;
+  this.counterAttackPower = counter;
+	this.image = "<img src='assets/images/'" + name + "'.jpg'>";
+}
+
 var fighterSelectd = false;
 var enemySelected = false;
 var defenderDefeated = false;
 
+
 var characters = [
-	$("#gimli.character").data({
-    name: "Gimli",
-		health: 150,
-		attack: 10,
-    counterAttack: 45,
-    image: "<img src='assets/images/gimli.jpg'>"
-	}),
-  $("#arwen.character").data({
-    name: "Arwen",
-		health: 140,
-		attack: 12,
-    counterAttack: 50,
-    image: "<img src='assets/images/arwen.jpg'>"
-	}),
-  $("#gothmog.character").data({
-    name: "Gothmog",
-    health: 180,
-    attack: 8,
-    counterAttack: 30,
-    image: "<img src='assets/images/gothmog.jpg'>"
-  }),
-  $("#lurtz.character").data({
-    name: "Lurtz",
-    health: 160,
-    attack: 10,
-    counterAttack: 40,
-    image: "<img src='assets/images/lurtz.jpg'>"
-  }),
+	new Character("Gimli", 150, 10, 45),
+	new Character("Arwen", 140, 12, 50),
+	new Character("Gothmog", 180, 8, 30),
+	new Character("Lurtz", 160, 10, 40)
 ];
+
+//
+// var characters = [
+// 	$("#gimli.character").data({
+//     name: "Gimli",
+// 		health: 150,
+// 		attack: 10,
+//     counterAttack: 45,
+// 	}),
+//   $("#arwen.character").data({
+//     name: "Arwen",
+// 		health: 140,
+// 		attack: 12,
+//     counterAttack: 50,
+// 	}),
+//   $("#gothmog.character").data({
+//     name: "Gothmog",
+//     health: 180,
+//     attack: 8,
+//     counterAttack: 30,
+//   }),
+//   $("#lurtz.character").data({
+//     name: "Lurtz",
+//     health: 160,
+//     attack: 10,
+//     counterAttack: 40,
+//   }),
+// ];
 
 // var fighterDiv = $("<div>");
 // var defenderDiv = $("<div>");
 
-// function Character(name, health, attack, counter) {
-//   this.name = name;
-//   this.healthPoints = health;
-//   this.attackPower = attack;
-//   this.counterAttackPower = counter;
-// }
+
+
+var $currentCharacter;
+var $currentDefender;
 
 $(".character").on("click", function() {
 	var $currentCharacter = $(this);
@@ -94,14 +106,27 @@ $(".character").on("click", function() {
   //     	"<h2>Attack: " + characterData.attack +"</h2>"
   // );
 
-  var healthOriginal = data.health;
-  var healthCurrent = data.health - 50;
-  var healthPercent = ((1-(healthCurrent / healthOriginal)) * 100);
-    $currentCharacter.find("img").css({filter:"grayscale("+ healthPercent + "%"});
+  // var healthOriginal = data.health;
+  // var healthCurrent = data.health - 100;
+  // var healthPercent = ((1-(healthCurrent / healthOriginal)) * 100);
+  // $currentCharacter.find("img").css({filter:"grayscale("+ healthPercent + "%"});
+});
 
-    console.log(healthPercent);
-  });
+console.log(healthPercent);
 
+var healthPercent = 100;
+var healthBar = find(".progress-bar");
+
+$(".fighter .progress-bar").css("width", + healthPercent + "%");
+
+$(".fighter").on("click", function() {
+	healthPercent = 15;
+	if (healthPercent < 20) {
+		$(this).find(".progress-bar").removeClass("progress-bar-success").addClass("progress-bar-danger");
+		$(this).find(".progress-bar").css("width", + healthPercent + "%");
+		console.log(healthPercent);
+	}
+});
 // $(".character").on("click", function(){
 //   console.log(this);
 //   $("#fighterarea").append(this);
@@ -112,6 +137,5 @@ $(".character").on("click", function() {
 //       $("#fighterarea").append(figherDiv);
 //     }
 //   }
-
 
 });

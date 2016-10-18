@@ -51,12 +51,24 @@ img {
   width: 100%;
 }
 
+#stagingarea {
+  margin: 10px 0 20px 0;
+}
+
 #attack-button {
   width: 100%;
 }
 
 #navbar-main {
   float:right;
+}
+
+.progress {
+  margin: 5px;
+}
+
+.panel {
+  margin: 0;
 }
 
 .character {
@@ -83,6 +95,10 @@ img {
   filter: drop-shadow(5px 5px 5px #62C462)
 }
 
+.fighter h2 {
+  background-color: #62C462;
+
+}
 .fighter-pic {
   filter: saturate(1.5);
 }
@@ -97,6 +113,7 @@ img {
 
 
 
-h4 {
+h1, h2, h3, h4 {
   text-align: center;
+  margin: 0;
 }
