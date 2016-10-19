@@ -36,13 +36,34 @@ Your players should be able to win and lose the game no matter what character th
 // 		default:
 //
 // 	}
+$( document ).ready(function() {
 
-function attack(fighter) {
+var characterDiv = $(".character");
+var stagingDiv = $(".staging");
+var fighterDiv = $(".fighter");
+var defenderDiv = $(".defender");
+var enemyDiv = $(".enemy");
 
-}
+var stagingareaDiv = $("#stagingarea");
+var fighterareaDiv = $("#fighterarea");
+var statsareaDiv = $("#statsarea");
+var defenderareaDiv = $("#defenderarea");
+var enemyareaDiv = $("#enemyarea");
+var main = $("main");
+
+var fighterSelected = false;
+var enemySelected = false;
+var defenderDefeated = false;
+
+var currentCharacter;
+var $currentDiv;
+
+$(".staging-text h2").text("Choose Your Fighter");
 
 function Character(name, health, attack, counter) {
 	this.name = name;
+	this.stagingHTML = $("#" + this.name);
+	this.enemyHTML = $("#" + this.name + "Enemy");
   this.healthPoints = health;
 	this.currentHealth = health;
 	this.healthPercentage = ((this.currentHealth / this.healthPoints) * 100);
@@ -52,16 +73,31 @@ function Character(name, health, attack, counter) {
 	this.image = "assets/images/" + name + ".gif";
 }
 
-var characterDiv = $(".character");
-var stagingDiv = $(".staging");
-var fighterDiv = $(".fighter");
-var defenderDiv = $(".defender");
-var enemyDiv = $(".enemy");
+function displayCharacter(character) {
+	var htmlElement = $("#" + character.name);
+	htmlElement.find($(".name")).text(character.name);
+	htmlElement.find($(".health")).text(character.currentHealth);
+	htmlElement.find($(".gif")).attr("src", character.image);
+}
 
-var fighterSelected = false;
-var enemySelected = false;
-var defenderDefeated = false;
+function displayEnemy(character) {
+	var htmlElement = $("#" + character.name + "Enemy");
+	htmlElement.find($(".name")).text(character.name);
+	htmlElement.find($(".health")).text(character.currentHealth);
+	htmlElement.find($(".gif")).attr("src", character.image);
+}
 
+function displayFighter(fighter) {
+	fighterDiv.find($(".name")).text(fighter.name);
+	fighterDiv.find($(".health")).text(fighter.currentHealth);
+	fighterDiv.find($(".gif")).attr("src", fighter.image);
+}
+
+function displayDefender(defender) {
+	defenderDiv.find($(".name")).text(defender.name);
+	defenderDiv.find($(".health")).text(defender.currentHealth);
+	defenderDiv.find($(".gif")).attr("src", defender.image);
+}
 
 var characters = [
 	new Character("Gimli", 150, 10, 45),
@@ -70,30 +106,65 @@ var characters = [
 	new Character("Lurtz", 160, 10, 40)
 ];
 
+statsareaDiv.parent().hide();
+fighterareaDiv.hide();
+defenderareaDiv.hide();
+enemyareaDiv.hide();
+
+function newGame() {
+	statsareaDiv.parent().hide();
+	fighterareaDiv.hide();
+	defenderareaDiv.hide();
+	enemyareaDiv.hide();
+}
+
 // iterate over each of the first for character divs and add an id of their name
 stagingDiv.each(function(i) {
 	$(this).attr("id", characters[i].name);
 });
 
 // this function will populate the DOM elements for each the selected character object's name, image, and health
-function displayCharacter(character) {
-	var htmlElement = $("#" + character.name);
-	htmlElement.find($(".name")).text(character.name);
-	htmlElement.find($(".gif")).attr("src", character.image);
-	htmlElement.find($(".health")).text(character.currentHealth);
-}
-
 jQuery.each(characters, function(i, item){
 	displayCharacter(item);
 });
-console.log(fighterDiv);
-// function fighterAttack () {
-// 	fighterDiv.addClass("hvr-wobble");
-// 	fighterDiv.trigger("click");
-// 	fighterDiv.removeAttr("id", "hvr-wobble");
-// }
 
-function fighterHit() {
+enemyDiv.each(function(i) {
+	$(this).attr("id", characters[i].name + "Enemy");
+});
+
+jQuery.each(characters, function(i, item){
+	displayEnemy(item);
+});
+stagingDiv.on("click", function() {
+	$currentDiv = $(this);
+	if (!fighterSelected) {
+		displayFighter(characters[0]);
+		$.each(characters, function(i) {
+			if (this.name === $currentDiv.attr("id")) {
+				currentCharacter = characters[i];
+			}
+		});
+		$(".staging-text h2").empty();
+		main.animate({"margin-top": "50px"},800);
+		stagingareaDiv.hide();
+		displayFighter(currentCharacter);
+		fighterareaDiv.show();
+		$("#" + currentCharacter.name + "Enemy").css("display", "none");
+		enemyareaDiv.fadeIn(800);
+		setTimeout(function() {
+			$(".enemy-text h2").text("Choose Your Enemy");
+		}, 500);
+		fighterSelected = true;
+	}
+	if (fighterSelected && !enemySelected) {
+
+	}
+
+});
+
+
+
+function fighterAttack() {
 
 	fighterDiv.toggleClass("hvr-wobble-fighter-hover");
 	setTimeout(function() {
@@ -109,8 +180,7 @@ function defenderCounter() {
 }
 
 $("#attack-button").on("click", function() {
-	fighterHit();
-
+	fighterAttack();
 	defenderCounter();
 });
 
@@ -177,3 +247,4 @@ $(".fighter").on("click", function() {
 //       $("#fighterarea").append(figherDiv);
 //     }
 //   }
+});
