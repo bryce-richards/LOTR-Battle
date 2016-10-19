@@ -48,6 +48,14 @@ main {
 	margin-top: 150px;
 }
 
+#mainarea {
+	min-height: 200px;
+}
+
+#statsarea {
+	height: 100%;
+}
+
 .gif {
   display: block;
   margin: 0 auto;
@@ -65,9 +73,19 @@ h2, h3, h4 {
 }
 
 #attack-button {
+	margin-top: 50px;
   width: 100%;
 }
 
+.alert {
+	margin-top: 50px;
+	min-height: 60px;
+}
+
+#alert-text {
+	line-height: 30px;
+	vertical-align: middle;
+}
 #navbar-main {
   float:right;
 }

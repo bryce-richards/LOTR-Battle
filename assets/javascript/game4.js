@@ -43,30 +43,36 @@ var stagingDiv = $(".staging");
 var fighterDiv = $(".fighter");
 var defenderDiv = $(".defender");
 var enemyDiv = $(".enemy");
+var alertDiv = $(".alert");
+
+alertDiv.css("visibility", "hidden");
+
 
 var stagingareaDiv = $("#stagingarea");
 var fighterareaDiv = $("#fighterarea");
 var statsareaDiv = $("#statsarea");
 var defenderareaDiv = $("#defenderarea");
 var enemyareaDiv = $("#enemyarea");
+var attackBtnDiv = $("#attack-button");
+
 var main = $("main");
 
 var fighterSelected = false;
 var enemySelected = false;
 var defenderDefeated = false;
 
-var currentCharacter;
+var currentFighter;
+var currentDefender;
 var $currentDiv;
+var wins = 0;
 
 $(".staging-text h2").text("Choose Your Fighter");
 
 function Character(name, health, attack, counter) {
 	this.name = name;
-	this.stagingHTML = $("#" + this.name);
-	this.enemyHTML = $("#" + this.name + "Enemy");
   this.healthPoints = health;
 	this.currentHealth = health;
-	this.healthPercentage = ((this.currentHealth / this.healthPoints) * 100);
+	this.healthPercent = 100;
   this.attackPower = attack;
 	this.currentAttack = attack;
   this.counterAttackPower = counter;
@@ -81,7 +87,7 @@ function displayCharacter(character) {
 }
 
 function displayEnemy(character) {
-	var htmlElement = $("#" + character.name + "Enemy");
+	var htmlElement = $("#" + character.name);
 	htmlElement.find($(".name")).text(character.name);
 	htmlElement.find($(".health")).text(character.currentHealth);
 	htmlElement.find($(".gif")).attr("src", character.image);
@@ -100,10 +106,10 @@ function displayDefender(defender) {
 }
 
 var characters = [
-	new Character("Gimli", 150, 10, 45),
-	new Character("Arwen", 140, 12, 50),
-	new Character("Gothmog", 180, 8, 30),
-	new Character("Lurtz", 160, 10, 40)
+	new Character("Gimli", 150, 10, 25),
+	new Character("Arwen", 140, 12, 30),
+	new Character("Gothmog", 180, 8, 20),
+	new Character("Lurtz", 160, 10, 30)
 ];
 
 statsareaDiv.parent().hide();
@@ -132,119 +138,128 @@ enemyDiv.each(function(i) {
 	$(this).attr("id", characters[i].name + "Enemy");
 });
 
-jQuery.each(characters, function(i, item){
-	displayEnemy(item);
-});
+function hideDiv() {
+
+}
+
+// Select Fighter
 stagingDiv.on("click", function() {
 	$currentDiv = $(this);
 	if (!fighterSelected) {
-		displayFighter(characters[0]);
 		$.each(characters, function(i) {
 			if (this.name === $currentDiv.attr("id")) {
-				currentCharacter = characters[i];
+				currentFighter = characters[i];
 			}
 		});
 		$(".staging-text h2").empty();
 		main.animate({"margin-top": "50px"},800);
 		stagingareaDiv.hide();
-		displayFighter(currentCharacter);
-		fighterareaDiv.show();
-		$("#" + currentCharacter.name + "Enemy").css("display", "none");
+		stagingDiv.each(function(i) {
+			$(this).removeAttr("id");
+		});
+		displayFighter(currentFighter);
+		fighterareaDiv.fadeIn();
+		enemyDiv.each(function(i) {
+			$(this).attr("id", characters[i].name);
+		});
+		$("#" + currentFighter.name).css("display", "none");
+		jQuery.each(characters, function(i, item){
+			displayEnemy(item);
+		});
 		enemyareaDiv.fadeIn(800);
 		setTimeout(function() {
 			$(".enemy-text h2").text("Choose Your Enemy");
 		}, 500);
+
 		fighterSelected = true;
 	}
-	if (fighterSelected && !enemySelected) {
-
-	}
-
 });
 
+// Select Defender
+enemyDiv.on("click", function() {
+	$currentDiv = $(this);
+	if (fighterSelected && !enemySelected) {
+		if (wins === 0) {
+			$.each(characters, function(i) {
+				if (this.name === $currentDiv.attr("id")) {
+					currentDefender = characters[i];
+				}
+			});
+			$(".enemy-text h2").empty();
+			statsareaDiv.parent().fadeIn();
+			displayDefender(currentDefender);
+			defenderareaDiv.fadeIn(800);
+			$("#" + currentDefender.name).hide();
+		}
+	}
+	else {
+		$.each(characters, function(i) {
+			if (this.name === $currentDiv.attr("id")) {
+				currentDefender = characters[i];
+			}
+			displayDefender(currentDefender);
+			$("#" + currentDefender.name).hide();
+	});
+}
+});
 
+function healthBar(character, div) {
+	character.healthPercent = ((character.currentHealth / character.healthPoints) * 100);
+	div.find(".progress-bar").css("width", character.healthPercent + "%");
+	if (character.healthPercent < 20) {
+		div.find(".progress-bar").removeClass("progress-bar-success").addClass("progress-bar-danger");
+	}
+}
 
 function fighterAttack() {
-
 	fighterDiv.toggleClass("hvr-wobble-fighter-hover");
 	setTimeout(function() {
 		fighterDiv.toggleClass("hvr-wobble-fighter-hover");
-	}, 800);
+	}, 1000);
+	currentDefender.currentHealth -= currentFighter.currentAttack;
+	healthBar(currentDefender, defenderDiv);
+	alertDiv.css("visibility","visible").find("h4").text("You hit " + currentDefender.name + " for " + currentFighter.currentAttack + " damage!");
+	currentFighter.currentAttack += currentFighter.attackPower;
+	attackBtnDiv.attr("disabled", "true");
+
+	if (currentDefender.currentHealth <= 0) {
+		wins++;
+		setTimeout(function() {
+			alertDiv.removeClass("alert-warning").addClass("alert-success").find("h4").text("You Win!");
+		},1000);
+		defenderDefeated = true;
+		defenderareaDiv.fadeOut();
+		setTimeout(function() {
+			$(".enemy-text h2").text("Choose Your Enemy");
+			alertDiv.css("visibility", "hidden");
+		}, 500);
+		return;
+	}
+
+	if (!defenderDefeated) {
+		setTimeout(function() {
+			defenderDiv.toggleClass("hvr-wobble-defender-hover");
+			setTimeout(function() {
+				defenderDiv.toggleClass("hvr-wobble-defender-hover");
+			}, 1000);
+			currentFighter.currentHealth -= currentDefender.counterAttackPower;
+			healthBar(currentFighter, fighterDiv);
+			alertDiv.css("visibility","visible").find("h4").text(currentDefender.name + " countered for " + currentDefender.counterAttackPower + " damage!");
+				if (currentFighter.currentHealth <= 0) {
+					alertDiv.show().removeClass("alert-warning").addClass("alert-danger").find("h4").text("You Lose!");
+					return;
+				}
+				attackBtnDiv.removeAttr("disabled");
+
+		}, 1000);
+
+	}
+
 }
 
-function defenderCounter() {
-	defenderDiv.toggleClass("hvr-wobble-defender-hover");
-	setTimeout(function() {
-		defenderDiv.toggleClass("hvr-wobble-defender-hover");
-	}, 800);
-}
 
 $("#attack-button").on("click", function() {
 	fighterAttack();
-	defenderCounter();
 });
 
-// for (var j = 0; j < characters.length; j++) {
-// 		displayCharacter(characters[j]);
-// 		console.log(characters[j]);
-// }
-
-	// characters[i].htmlElement.find($(".name")).text(characters[i].name);
-	// characters[i].htmlElement.find($(".photo")).html(characters[i].image);
-	// characters[i].htmlElement.find($(".health")).text(characters[i].health);
-
-// var fighterDiv = $("<div>");
-// var defenderDiv = $("<div>");
-
-
-//
-// $(".character").on("click", function() {
-// 	if (!fighterSelected) {
-// 		var $currentCharacter = $(this);
-// 	  var data = $currentCharacter.data();
-// 	  console.log(data);
-// 		fighterSelected = true;
-// 	}
-//
-// 	if (fighterSelected)
-
-
-
-
-  //$currentCharacter.find(".health").text(data.health);
-  // $("#output").html(
-  // 		"<h1>Name: " + characterData.name +"</h1>" +
-  //     	"<h2>Attack: " + characterData.attack +"</h2>"
-  // );
-
-  // var healthOriginal = data.health;
-  // var healthCurrent = data.health - 100;
-  // var healthPercent = ((1-(healthCurrent / healthOriginal)) * 100);
-  // $currentCharacter.find("img").css({filter:"grayscale("+ healthPercent + "%"});
-
-console.log(healthPercent);
-
-var healthPercent = 100;
-var healthBar = find(".progress-bar");
-
-$(".fighter .progress-bar").css("width", + healthPercent + "%");
-
-$(".fighter").on("click", function() {
-	healthPercent = 15;
-	if (healthPercent < 20) {
-		$(this).find(".progress-bar").removeClass("progress-bar-success").addClass("progress-bar-danger");
-		$(this).find(".progress-bar").css("width", + healthPercent + "%");
-		console.log(healthPercent);
-	}
-});
-// $(".character").on("click", function(){
-//   console.log(this);
-//   $("#fighterarea").append(this);
-//   for (var j = 0; j < characters.length; j++) {
-//     if (this.name == characters[i].name) {
-//       console.log(this);
-//       fighterDiv = this.contents();
-//       $("#fighterarea").append(figherDiv);
-//     }
-//   }
 });
