@@ -72,9 +72,9 @@ function displayDefender(defender) {
 }
 
 	var characters = [
-		new Character("Gimli", 120, 10, 40),
-		new Character("Arwen", 140, 8, 30),
-		new Character("Gothmog", 160, 6, 20),
+		new Character("Gimli", 120, 10, 25),
+		new Character("Arwen", 140, 8, 20),
+		new Character("Gothmog", 160, 6, 15),
 		new Character("Lurtz", 180, 4, 10)
 	];
 
@@ -203,7 +203,7 @@ function displayDefender(defender) {
 				alertDiv.removeClass("alert-warning").addClass("alert-info").find(alerttextDiv).text(currentDefender.name + " was defeated!");
 			},1000);
 			defenderDefeated = true;
-			if (wins < (characters.length - 1)) {
+			if (wins < 3) {
 				enemySelected = false;
 				setTimeout(function() {
 					defenderareaDiv.fadeOut();
