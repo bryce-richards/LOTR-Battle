@@ -220,7 +220,7 @@ function displayDefender(defender) {
 						defenderareaDiv.fadeOut();
 						statsareaDiv.fadeOut();
 						setTimeout(function() {
-							enemytextDiv.parent().animate({opacity:1});
+							enemytextDiv.parent().animate({opacity:0});
 							fighterareaDiv.closest($(".col-md-4")).addClass("col-md-offset-4",1000);
 							victorytextDiv.text("Victory!").parent().fadeIn(1000);
 						}, 1000);
