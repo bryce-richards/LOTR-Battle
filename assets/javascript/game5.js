@@ -73,9 +73,9 @@ function displayDefender(defender) {
 
 	var characters = [
 		new Character("Gimli", 120, 10, 40),
-		new Character("Arwen", 140, 8, 300),
+		new Character("Arwen", 140, 8, 30),
 		new Character("Gothmog", 160, 6, 20),
-		new Character("Lurtz", 180, 400, 10)
+		new Character("Lurtz", 180, 4, 10)
 	];
 
 	fighterSelected = false;
