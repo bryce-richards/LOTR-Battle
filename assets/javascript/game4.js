@@ -1,6 +1,3 @@
-
-function newGame() {
-
 var characterDiv = $(".character");
 var stagingDiv = $(".staging");
 var fighterDiv = $(".fighter");
@@ -19,18 +16,18 @@ var attackBtnDiv = $("#attack-button");
 var stagingtextDiv = $("#staging-text");
 var enemytextDiv = $("#enemy-text");
 var alerttextDiv = $("#alert-text");
-var victorytextDiv = $("#victory-text");
 
 var main = $("main");
 
-var fighterSelected;
-var enemySelected;
-var defenderDefeated;
+var characters = [];
+var fighterSelected = false;
+var enemySelected = false;
+var defenderDefeated = false;
 
 var currentFighter;
 var currentDefender;
 var $currentDiv;
-var wins;
+var wins = 0;
 
 function Character(name, health, attack, counter) {
 	this.name = name;
@@ -43,18 +40,18 @@ function Character(name, health, attack, counter) {
 	this.image = "assets/images/" + name + ".gif";
 }
 
-function displayCharacter(character) {
+characters = [
+	new Character("Gimli", 150, 10, 16),
+	new Character("Arwen", 140, 120, 18),
+	new Character("Gothmog", 160, 11, 15),
+	new Character("Lurtz", 170, 8, 15)
+];
+
+function displayEnemy(character) {
 	var htmlElement = $("#" + character.name);
 	htmlElement.find($(".name")).text(character.name);
-	htmlElement.find($(".gif")).attr("src", character.image);
 	htmlElement.find($(".health")).text(character.currentHealth);
-}
-
-function displayEnemy(enemy) {
-	var htmlElement = $("#" + enemy.name);
-	htmlElement.find($(".name")).text(enemy.name);
-	htmlElement.find($(".health")).text(enemy.currentHealth);
-	htmlElement.find($(".gif")).attr("src", enemy.image);
+	htmlElement.find($(".gif")).attr("src", character.image);
 }
 
 function displayFighter(fighter) {
@@ -71,25 +68,20 @@ function displayDefender(defender) {
 	defenderDiv.find($(".gif")).attr("src", defender.image);
 }
 
-	var characters = [
-		new Character("Gimli", 120, 10, 40),
-		new Character("Arwen", 140, 8, 30),
-		new Character("Gothmog", 160, 6, 20),
-		new Character("Lurtz", 180, 4, 10)
-	];
+function newGame() {
 
-	fighterSelected = false;
-	enemySelected = false;
-	defenderDefeated = false;
+	// Reset display
+	fighterareaDiv.closest($(".col-md-offset-4")).remove("col-md-offset-4");
+	stagingtextDiv.text("Choose Your Fighter");
+	statsareaDiv.parent().hide();
+	fighterareaDiv.hide();
+	defenderareaDiv.hide();
+	enemyareaDiv.hide();
+	enemytextDiv.empty();
+	alertDiv.css("visibility", "hidden");
 
-	wins = 0;
 
 	// iterate over each of the first for character divs and add an id of their name
-	enemyDiv.each(function(i) {
-		$(this).removeAttr("id");
-		$(this).show();
-	});
-
 	stagingDiv.each(function(i) {
 		$(this).attr("id", characters[i].name);
 	});
@@ -99,23 +91,62 @@ function displayDefender(defender) {
 		displayCharacter(item);
 	});
 
-	// Reset display
-	fighterareaDiv.closest($(".col-md-offset-4")).removeClass("col-md-offset-4",1000);
-	fighterareaDiv.parent().addClass("col-md-offset-3", 1000);
-	fighterareaDiv.hide();
-	fighterDiv.removeClass("fighter-pic-defeat");
-	stagingareaDiv.show();
-	stagingtextDiv.parent().fadeIn(1000);
-	victorytextDiv.parent().hide();
-	stagingtextDiv.text("Choose Your Fighter");
-	statsareaDiv.hide();
-	defenderareaDiv.hide();
-	enemyareaDiv.hide();
-	enemyDiv.css("visibility", "visible");
-	enemytextDiv.css("visibility", "hidden");
-	alertDiv.css("visibility", "hidden");
-	defenderDiv.removeClass("hvr-wobble-defender-hover");
-	fighterDiv.removeClass("hvr-wobble-fighter-hover");
+	enemyDiv.each(function(i) {
+		$(this).attr("id", characters[i].name + "Enemy");
+	});
+
+	// Select Fighter
+	stagingDiv.on("click", function() {
+		$currentDiv = $(this);
+		if (!fighterSelected) {
+			$.each(characters, function(i) {
+				if (this.name === $currentDiv.attr("id")) {
+					currentFighter = characters[i];
+				}
+			});
+			stagingtextDiv.empty();
+			main.animate({"margin-top": "50px"},800);
+			stagingareaDiv.hide();
+			stagingDiv.each(function(i) {
+				$(this).removeAttr("id");
+			});
+			displayFighter(currentFighter);
+			fighterareaDiv.fadeIn();
+			enemyDiv.each(function(i) {
+				$(this).attr("id", characters[i].name);
+			});
+			$("#" + currentFighter.name).css("display", "none");
+			jQuery.each(characters, function(i, item){
+				displayEnemy(item);
+			});
+			enemyareaDiv.fadeIn(800);
+			enemytextDiv.text("Choose Your Enemy").parent().fadeIn();
+			fighterSelected = true;
+		}
+	});
+
+	// Select Defender
+	enemyDiv.on("click", function() {
+		$currentDiv = $(this);
+		if (fighterSelected && !enemySelected) {
+				$.each(characters, function(i) {
+				if (this.name === $currentDiv.attr("id")) {
+					currentDefender = characters[i];
+				}
+			});
+			enemytextDiv.css("visiblity","hidden");
+			alertDiv.css("visibility", "hidden");
+			attackBtnDiv.removeAttr("disabled");
+			statsareaDiv.parent().fadeIn();
+			displayDefender(currentDefender);
+			healthBar(currentDefender, defenderDiv);
+			console.log(currentDefender.currentHealth);
+			defenderareaDiv.fadeIn(800);
+			$("#" + currentDefender.name).hide();
+			enemytextDiv.text("Choose Your Enemy").parent().animate({opacity:0});
+			enemySelected = true;
+		}
+	});
 
 	function healthBar(character, div) {
 		character.healthPercent = ((character.currentHealth / character.healthPoints) * 100);
@@ -129,60 +160,6 @@ function displayDefender(defender) {
 			div.find(healthDiv).text(character.currentHealth);
 		}
 	}
-
-	// Select Fighter
-	stagingDiv.on("click", function() {
-		$currentDiv = $(this);
-		if (!fighterSelected) {
-			jQuery.each(characters, function(i) {
-				if (this.name === $currentDiv.attr("id")) {
-					currentFighter = characters[i];
-				}
-			});
-			stagingtextDiv.empty();
-			main.animate({"margin-top": "50px"},800);
-			stagingareaDiv.hide();
-			stagingDiv.each(function(i) {
-				$(this).removeAttr("id");
-			});
-			displayFighter(currentFighter);
-			healthBar(currentFighter, fighterDiv);
-			fighterareaDiv.fadeIn();
-			enemyDiv.each(function(i) {
-				$(this).attr("id", characters[i].name);
-			});
-			$("#" + currentFighter.name).css("visibility", "hidden");
-			jQuery.each(characters, function(i, item){
-				displayEnemy(item);
-			});
-			enemyareaDiv.fadeIn(800);
-			enemytextDiv.css("visibility", "visible").text("Choose Your Enemy").parent().animate({opacity:1});
-			fighterSelected = true;
-		}
-	});
-
-	// Select Defender
-	enemyDiv.on("click", function() {
-		$currentDiv = $(this);
-		if (fighterSelected && !enemySelected) {
-				$.each(characters, function(i) {
-				if (this.name === $currentDiv.attr("id")) {
-					currentDefender = characters[i];
-					$currentDiv.hide();
-				}
-			});
-			enemytextDiv.css("visiblity","hidden");
-			alertDiv.css("visibility", "hidden");
-			attackBtnDiv.removeAttr("disabled");
-			statsareaDiv.fadeIn(1000);
-			displayDefender(currentDefender);
-			healthBar(currentDefender, defenderDiv);
-			defenderareaDiv.fadeIn(1000);
-			enemytextDiv.text("Choose Your Enemy").parent().animate({opacity:0});
-			enemySelected = true;
-		}
-	});
-
 
 	function fighterAttack() {
 		fighterDiv.toggleClass("hvr-wobble-fighter-hover");
@@ -208,25 +185,22 @@ function displayDefender(defender) {
 				setTimeout(function() {
 					defenderareaDiv.fadeOut();
 					setTimeout(function() {
-						statsareaDiv.fadeOut();
-						enemytextDiv.text("Choose Your Enemy").parent().animate({opacity:1});
+						statsareaDiv.parent().fadeOut();
+							enemytextDiv.text("Choose Your Enemy").parent().animate({opacity:1});
 					}, 1000);
 				}, 1000);
 				return;
 			} else {
 				setTimeout(function() {
 					alertDiv.removeClass("alert-warning").addClass("alert-success").find(alerttextDiv).text(currentFighter.name + " has defeated all enemies!");
-					setTimeout(function() {
-						defenderareaDiv.fadeOut();
-						statsareaDiv.fadeOut();
-						setTimeout(function() {
-							enemytextDiv.parent().animate({opacity:1});
-							fighterareaDiv.closest($(".col-md-4")).addClass("col-md-offset-4",1000);
-							victorytextDiv.text("Victory!").parent().fadeIn(1000);
-						}, 1000);
-					}, 1000);
 				},1000);
-				return;
+				setTimeout(function() {
+					enemytextDiv.hide();
+					defenderareaDiv.fadeOut();
+					statsareaDiv.fadeOut();
+					fighterareaDiv.closest($(".col-md-4")).addClass("col-md-offset-4");
+				}, 1000);
+
 			}
 		}
 
@@ -235,35 +209,22 @@ function displayDefender(defender) {
 				defenderDiv.toggleClass("hvr-wobble-defender-hover");
 				setTimeout(function() {
 					defenderDiv.toggleClass("hvr-wobble-defender-hover");
-					attackBtnDiv.removeAttr("disabled");
 				}, 1000);
-
-			currentFighter.currentHealth -= currentDefender.counterAttackPower;
-			healthBar(currentFighter, fighterDiv);
-			alertDiv.css("visibility","visible").find(alerttextDiv).text(currentDefender.name + " countered for " + currentDefender.counterAttackPower + " damage!");
-
-			setTimeout(function() {
-				if (currentFighter.currentHealth <= 0) {
-					setTimeout(function() {
-						defenderareaDiv.fadeOut();
-						statsareaDiv.fadeOut();
-						enemyDiv.fadeOut();
-						setTimeout(function() {
-							fighterareaDiv.closest($(".col-md-4")).addClass("col-md-offset-4",1000);
-							victorytextDiv.text(currentFighter.name + " was defeated!").parent().fadeIn(1000);
-							fighterDiv.addClass("fighter-pic-defeat", 1000);
-						}, 1000);
-					}, 1000);
-					return;
-				}
+				currentFighter.currentHealth -= currentDefender.counterAttackPower;
+				healthBar(currentFighter, fighterDiv);
+				alertDiv.css("visibility","visible").find(alerttextDiv).text(currentDefender.name + " countered for " + currentDefender.counterAttackPower + " damage!");
+					if (currentFighter.currentHealth <= 0) {
+						alertDiv.show().removeClass("alert-warning").addClass("alert-danger").alertextDiv.text(currentFighter.name + " was defeated!");
+						return;
+					}
+					attackBtnDiv.removeAttr("disabled");
 			}, 1000);
-		}, 1000);
+		}
 	}
-}
 
 	$("#attack-button").on("click", function() {
-		defenderDefeated = false;
 		fighterAttack();
 	});
 }
+
 newGame();
