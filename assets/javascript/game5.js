@@ -1,5 +1,4 @@
 
-function newGame() {
 
 var characterDiv = $(".character");
 var stagingDiv = $(".staging");
@@ -70,6 +69,7 @@ function displayDefender(defender) {
 	defenderDiv.find($(".health")).text(defender.currentHealth);
 	defenderDiv.find($(".gif")).attr("src", defender.image);
 }
+function newGame() {
 
 	var characters = [
 		new Character("Gimli", 120, 10, 25),
@@ -80,7 +80,6 @@ function displayDefender(defender) {
 
 	fighterSelected = false;
 	enemySelected = false;
-	defenderDefeated = false;
 
 	wins = 0;
 
@@ -185,9 +184,9 @@ function displayDefender(defender) {
 
 
 	function fighterAttack() {
-		fighterDiv.toggleClass("hvr-wobble-fighter-hover");
+		fighterDiv.addClass("hvr-wobble-fighter-hover");
 		setTimeout(function() {
-			fighterDiv.toggleClass("hvr-wobble-fighter-hover");
+			fighterDiv.removeClass("hvr-wobble-fighter-hover");
 		}, 1000);
 		currentDefender.currentHealth -= currentFighter.currentAttack;
 		healthBar(currentDefender, defenderDiv);
@@ -213,7 +212,7 @@ function displayDefender(defender) {
 					}, 1000);
 				}, 1000);
 				return;
-			} else {
+			} else if (wins === 3) {
 				setTimeout(function() {
 					alertDiv.removeClass("alert-warning").addClass("alert-success").find(alerttextDiv).text(currentFighter.name + " has defeated all enemies!");
 					setTimeout(function() {
@@ -232,9 +231,9 @@ function displayDefender(defender) {
 
 		if (!defenderDefeated) {
 			setTimeout(function() {
-				defenderDiv.toggleClass("hvr-wobble-defender-hover");
+				defenderDiv.addClass("hvr-wobble-defender-hover");
 				setTimeout(function() {
-					defenderDiv.toggleClass("hvr-wobble-defender-hover");
+					defenderDiv.removeClass("hvr-wobble-defender-hover");
 					attackBtnDiv.removeAttr("disabled");
 				}, 1000);
 
@@ -256,7 +255,7 @@ function displayDefender(defender) {
 					}, 1000);
 					return;
 				}
-			}, 1000);
+			})
 		}, 1000);
 	}
 }
