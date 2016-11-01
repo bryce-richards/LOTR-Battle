@@ -1,5 +1,4 @@
 // jQuery shortcuts
-var characterDiv = $(".character");
 var stagingDiv = $(".staging");
 var fighterDiv = $(".fighter");
 var defenderDiv = $(".defender");
@@ -37,14 +36,14 @@ function Character(name, health, attack, counter) {
 }
 
 var lotrCharacters = [
-		new Character("Gimli", 120, 10, 25),
-		new Character("Arwen", 140, 8, 20),
-		new Character("Gothmog", 160, 6, 15),
-		new Character("Lurtz", 180, 4, 10)
-	];
+	new Character("Gimli", 120, 10, 25),
+	new Character("Arwen", 140, 8, 20),
+	new Character("Gothmog", 160, 6, 15),
+	new Character("Lurtz", 180, 4, 10)
+];
 	
 function Game(array) {
-	this.characters = array.slice(0);
+	this.characters = array;
 	this.fighterSelected = false;
 	this.enemySelected = false;
 	this.defenderDefeated = false;
@@ -68,10 +67,12 @@ function resetDisplay() {
 	alertDiv.css("visibility", "hidden");
 	defenderDiv.removeClass("hvr-wobble-defender-hover");
 	fighterDiv.removeClass("hvr-wobble-fighter-hover");
+	main.css("margin-top", "120px");
 }
 
 function newGame() {
-	currentGame = new Game(lotrCharacters);
+	var clonedArray = JSON.parse(JSON.stringify(lotrCharacters));
+	currentGame = new Game(clonedArray);
 	resetDisplay();
 	// iterate over each of the first for character divs and add an id of their name
 	enemyDiv.each(function(i) {
@@ -87,7 +88,6 @@ function newGame() {
 	$.each(currentGame.characters, function(i, item){
 		displayCharacter(item);
 	});
-	console.log(currentGame);
 }
 
 function displayCharacter(character) {
@@ -259,7 +259,6 @@ function fighterAttack() {
 							fighterDiv.addClass("fighter-pic-defeat", 1000);
 						}, 1000);
 					}, 1000);
-					return;
 				}
 			}, 1000);	
 		}, 1000);
@@ -271,4 +270,4 @@ $("#attack-button").on("click", function() {
 	fighterAttack();
 });
 
-newGame(lotrCharacters);
+newGame();
