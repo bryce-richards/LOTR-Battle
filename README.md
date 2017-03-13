@@ -16,10 +16,12 @@ Your hero's attack will increae each round, but the enemy's will stay the same.
 
 * [JavaScript] (https://www.javascript.com/)
 * [jQuery] (https://jquery.com/)
+* [Twitter Bootstrap] (http://getbootstrap.com/)
 
 ## Acknowledgments
 
 Thanks to Ian Lunn and his [hover.css] (http://ianlunn.github.io/Hover/) library
+Bootstrap theme by [Bootswatch] (http://bootswatch.com/)
 
 ## Author
 
