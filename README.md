@@ -8,20 +8,20 @@ Your hero's attack will increae each round, but the enemy's will stay the same.
 
 ## Demo
 
-[Link] (https://lotr-battle.herokuapp.com/)
+[Link](https://lotr-battle.herokuapp.com/)
 
-![Screenshot] (https://github.com/bryce-richards/LOTR-Battle/blob/master/LOTR-battle.png)
+![Screenshot](https://github.com/bryce-richards/LOTR-Battle/blob/master/LOTR-battle.png)
 
 ## Technology
 
-* [JavaScript] (https://www.javascript.com/)
-* [jQuery] (https://jquery.com/)
-* [Twitter Bootstrap] (http://getbootstrap.com/)
+* [JavaScript](https://www.javascript.com/)
+* [jQuery](https://jquery.com/)
+* [Twitter Bootstrap](http://getbootstrap.com/)
 
 ## Acknowledgments
 
-Thanks to Ian Lunn and his [hover.css] (http://ianlunn.github.io/Hover/) library
-Bootstrap theme by [Bootswatch] (http://bootswatch.com/)
+Thanks to Ian Lunn and his [hover.css](http://ianlunn.github.io/Hover/) library
+Bootstrap theme by [Bootswatch](http://bootswatch.com/)
 
 ## Author
 
